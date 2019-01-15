@@ -32,7 +32,7 @@ for Sa in [(2,2), (3,3)]  # not needed for Sa = (1, 1);
             d = det(a)
             T = typeof((one(Ta)*zero(Tb) + one(Ta)*zero(Tb))/d)
             c = similar(b, T)
-            for col = 1:Sb[2]
+            for col = Base.Oneto(Sb[2])
                 @inbounds c[:, col] = solve(Size($Sa), Size($Sa[1],), a, b[:, col])
             end
             return similar_type(b, T)(c)
