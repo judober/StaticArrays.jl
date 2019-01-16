@@ -4,16 +4,26 @@
     @inbounds return similar_type(b, typeof(a[1] \ b[1]))(a[1] \ b[1])
 end
 
-@inline function solve(::Size{(2,2)}, ::Size{(2,)}, a::StaticMatrix{<:Any, <:Any, Ta}, b::StaticVector{<:Any, Tb}) where {Ta, Tb}
-    d = det(a)
-    T = typeof((one(Ta)*zero(Tb) + one(Ta)*zero(Tb))/d)
+for Sa in [(2,2), (3,3)]
+    @eval begin
+        @inline function solve(::Size{$Sa}, ::Size{Sb}, a::StaticMatrix{<:Any, <:Any, Ta}, b::StaticMatrix{<:Any, <:Any, Tb}) where {Sb, Ta, Tb}
+            d = det(a)
+            T = typeof((one(Ta)*zero(Tb) + one(Ta)*zero(Tb))/d)
+            return solve(Size($Sa), Size(Sb), a, b, d, T)
+        end
+    end # @eval
+end
+
+@inline function solve(::Size{(2,2)}, ::Size{(2,)}, a::StaticMatrix{<:Any, <:Any, Ta}, b::StaticVector{<:Any, Tb}, d, T) where {Ta, Tb}
+    # d = det(a)
+    # T = typeof((one(Ta)*zero(Tb) + one(Ta)*zero(Tb))/d)
     @inbounds return similar_type(b, T)((a[2,2]*b[1] - a[1,2]*b[2])/d,
                                         (a[1,1]*b[2] - a[2,1]*b[1])/d)
 end
 
-@inline function solve(::Size{(3,3)}, ::Size{(3,)}, a::StaticMatrix{<:Any, <:Any, Ta}, b::StaticVector{<:Any, Tb}) where {Ta, Tb}
-    d = det(a)
-    T = typeof((one(Ta)*zero(Tb) + one(Ta)*zero(Tb))/d)
+@inline function solve(::Size{(3,3)}, ::Size{(3,)}, a::StaticMatrix{<:Any, <:Any, Ta}, b::StaticVector{<:Any, Tb}, d, T) where {Ta, Tb}
+    # d = det(a)
+    # T = typeof((one(Ta)*zero(Tb) + one(Ta)*zero(Tb))/d)
     @inbounds return similar_type(b, T)(
         ((a[2,2]*a[3,3] - a[2,3]*a[3,2])*b[1] +
             (a[1,3]*a[3,2] - a[1,2]*a[3,3])*b[2] +
@@ -28,12 +38,12 @@ end
 
 for Sa in [(2,2), (3,3)]  # not needed for Sa = (1, 1);
     @eval begin
-        @inline function solve(::Size{$Sa}, ::Size{Sb}, a::StaticMatrix{<:Any, <:Any, Ta}, b::StaticMatrix{<:Any, <:Any, Tb}) where {Sb, Ta, Tb}
-            d = det(a)
-            T = typeof((one(Ta)*zero(Tb) + one(Ta)*zero(Tb))/d)
+        @inline function solve(::Size{$Sa}, ::Size{Sb}, a::StaticMatrix{<:Any, <:Any, Ta}, b::StaticMatrix{<:Any, <:Any, Tb}, d, T) where {Sb, Ta, Tb}
+            # d = det(a)
+            # T = typeof((one(Ta)*zero(Tb) + one(Ta)*zero(Tb))/d)
             c = similar(b, T)
             for col = 1:Sb[2]
-                @inbounds c[:, col] = solve(Size($Sa), Size($Sa[1],), a, b[:, col])
+                @inbounds c[:, col] = solve(Size($Sa), Size($Sa[1],), a, b[:, col], d, T)
             end
             return similar_type(b, T)(c)
         end
