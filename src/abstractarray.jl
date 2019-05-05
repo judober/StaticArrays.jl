@@ -158,7 +158,6 @@ reshape(a::Array, s::Size{S}) where {S} = s(a)
 @inline vec(a::StaticArray) = reshape(a, Size(prod(Size(typeof(a)))))
 
 @inline copy(a::StaticArray) = typeof(a)(Tuple(a))
-@inline copy(a::SizedArray) = typeof(a)(a)
 
 @inline reverse(v::StaticVector) = typeof(v)(reverse(Tuple(v)))
 
