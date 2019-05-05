@@ -136,4 +136,7 @@ include("deque.jl")
 include("flatten.jl")
 include("io.jl")
 
+include("FixedSizeArrays.jl")
+include("ImmutableArrays.jl")
+
 end # module

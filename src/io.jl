@@ -10,6 +10,8 @@ end
     a
 end
 
+@deprecate read!(io::IO, SA::Type{<:StaticArray}) read(io, SA)
+
 @inline function write(io::IO, a::SA) where {SA<:StaticArray}
     write(io, Ref(Tuple(a)))
 end
