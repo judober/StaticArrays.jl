@@ -106,14 +106,8 @@ using StaticArrays, Test, LinearAlgebra
     end
 
     @testset "copy" begin
-        M = [1 2; 3 4]
-        SM = SMatrix{2, 2}(M)
-        MM = MMatrix{2, 2}(M)
-        SizeM = Size(2,2)(M)
-        @test @inferred(copy(SM)) === @SMatrix [1 2; 3 4]
-        @test @inferred(copy(MM))::MMatrix == M
-        @test copy(SM).data !== M
-        @test copy(SizeM).data !== M
+        @test @inferred(copy(SMatrix{2, 2}([1 2; 3 4]))) === @SMatrix [1 2; 3 4]
+        @test @inferred(copy(MMatrix{2, 2}([1 2; 3 4])))::MMatrix == [1 2; 3 4]
     end
 
     @testset "reverse" begin
