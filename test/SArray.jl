@@ -113,7 +113,9 @@
 
         @test_throws Exception m[1] = 1
 
-        @test Base.dataids(m) === ()
+        if isdefined(Base, :dataids) # v0.7-
+            @test Base.dataids(m) === ()
+        end
     end
 
     @testset "promotion" begin
