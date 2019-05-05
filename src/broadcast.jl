@@ -164,23 +164,19 @@ end
         exprs[current_ind...] = :(dest[$j] = f($(exprs_vals...)))
 
         # increment current_ind (maybe use CartesianIndices?)
-	if length(current_ind) >= 1
-            current_ind[1] += 1
-            for i ∈ 1:length(newsize)
-                if current_ind[i] > newsize[i]
-                    if i == length(newsize)
-                        more = false
-                        break
-                    else
-                        current_ind[i] = 1
-                        current_ind[i+1] += 1
-                    end
-                else
+        current_ind[1] += 1
+        for i ∈ 1:length(newsize)
+            if current_ind[i] > newsize[i]
+                if i == length(newsize)
+                    more = false
                     break
+                else
+                    current_ind[i] = 1
+                    current_ind[i+1] += 1
                 end
+            else
+                break
             end
-        else
-            break
         end
         j += 1
     end
